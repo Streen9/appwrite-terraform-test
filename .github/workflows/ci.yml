@@ -24,7 +24,7 @@ jobs:
           bun-version: 'latest'
 
       - name: Install dependencies 📦
-        run: bun ci
+        run: bun install
 
       - name: Run tests 🧪
         run: bun test

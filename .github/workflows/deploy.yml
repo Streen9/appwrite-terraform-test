@@ -25,15 +25,15 @@ jobs:
 
       - name: Install frontend dependencies 📦
         run: bun install
-        working-directory: ./frontend
+        working-directory: ./appwrite-test
 
       - name: Build frontend 🛠️
         run: bun run build
-        working-directory: ./frontend
+        working-directory: ./appwrite-test
 
       - name: Archive frontend build 📁
         run: zip -r build.zip build
-        working-directory: ./frontend
+        working-directory: ./appwrite-test
 
       - name: Install backend dependencies 📦
         run: npm install
