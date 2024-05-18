@@ -1,0 +1,12 @@
+{
+    "functions": [
+      {
+        "$id": "function-id",
+        "name": "Hello World Function",
+        "runtime": "node-18",
+        "path": "./functions/hello-world",
+        "entrypoint": "index.js"
+      }
+    ]
+  }
+  

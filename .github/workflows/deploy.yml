@@ -1,0 +1,59 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code 📥
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js 🍏 
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Setup Bun🍙
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 'latest'
+
+      - name: Install frontend dependencies 📦
+        run: bun install
+        working-directory: ./frontend
+
+      - name: Build frontend 🛠️
+        run: bun run build
+        working-directory: ./frontend
+
+      - name: Archive frontend build 📁
+        run: zip -r build.zip build
+        working-directory: ./frontend
+
+      - name: Install backend dependencies 📦
+        run: npm install
+        working-directory: ./backend/functions/hello-world
+
+      - name: Archive backend function 📁
+        run: zip -r function.zip .
+        working-directory: ./backend/functions/hello-world
+
+      - name: Configure Appwrite credentials 🔑
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Deploy to Appwrite  🚀
+        run: |
+          npm install -g @appwrite/cli
+          appwrite init project --projectId <PROJECT_ID> --endpoint <APPWRITE_ENDPOINT> --key <API_KEY>
+          appwrite deploy function --all
+        env:
+          APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
+          APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
