@@ -13,12 +13,12 @@ jobs:
       - name: Checkout code 📥
         uses: actions/checkout@v2
 
-      - name: Set up Node.js 🍏 
+      - name: Set up Node.js 🍏
         uses: actions/setup-node@v2
         with:
           node-version: "18"
 
-      - name: Setup Bun🍙
+      - name: Setup Bun 🍙
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: 'latest'
@@ -30,6 +30,10 @@ jobs:
       - name: Build frontend 🛠️
         run: bun run build
         working-directory: ./appwrite-test
+
+      - name: List frontend build directory 🗂️
+        run: ls -la
+        working-directory: ./appwrite-test/build
 
       - name: Archive frontend build 📁
         run: zip -r build.zip build
@@ -48,10 +52,10 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Deploy to Appwrite  🚀
+      - name: Deploy to Appwrite 🚀
         run: |
           npm install -g @appwrite/cli
-          appwrite init project --projectId <PROJECT_ID> --endpoint <APPWRITE_ENDPOINT> --key <API_KEY>
+          appwrite init project --projectId ${{ secrets.APPWRITE_PROJECT_ID }} --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --key ${{ secrets.APPWRITE_API_KEY }}
           appwrite deploy function --all
         env:
           APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
