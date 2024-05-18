@@ -56,11 +56,13 @@ jobs:
         run: |
           curl -sL https://appwrite.io/cli/install.sh | bash
   
+
       - name: Deploy to Appwrite 🚀
         run: |
-          appwrite init project --projectId ${{ secrets.APPWRITE_PROJECT_ID }} --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --key ${{ secrets.APPWRITE_API_KEY }}
-          appwrite deploy function --all
-        env:
-          APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
-          APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
-          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
+          export APPWRITE_PROJECT_ID=${{ secrets.APPWRITE_PROJECT_ID }}
+          export APPWRITE_ENDPOINT=${{ secrets.APPWRITE_ENDPOINT }}
+          export APPWRITE_API_KEY=${{ secrets.APPWRITE_API_KEY }}
+          appwrite client set-endpoint $APPWRITE_ENDPOINT --self-signed
+          appwrite client set-project $APPWRITE_PROJECT_ID
+          appwrite client set-key $APPWRITE_API_KEY
+          appwrite functions deploy --all
