@@ -36,5 +36,7 @@ jobs:
         working-directory: ./appwrite-test
 
       
-      - name: Displaying the secrets
-        run: ${{ secrets.APPWRITE_PROJECT_ID }}
+      - name: Use secret
+        run: echo "Using secret"
+        env:
+          APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}

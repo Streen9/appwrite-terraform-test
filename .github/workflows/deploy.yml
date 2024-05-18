@@ -33,10 +33,10 @@ jobs:
 
       - name: List frontend build directory 🗂️
         run: ls -la
-        working-directory: ./appwrite-test/build
+        working-directory: ./appwrite-test/dist
 
       - name: Archive frontend build 📁
-        run: zip -r build.zip build
+        run: zip -r build.zip dist
         working-directory: ./appwrite-test
 
       - name: Install backend dependencies 📦
