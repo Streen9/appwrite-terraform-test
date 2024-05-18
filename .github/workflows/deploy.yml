@@ -52,9 +52,12 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Install Appwrite CLI
+        run: |
+          curl -sL https://appwrite.io/cli/install.sh | bash
+  
       - name: Deploy to Appwrite 🚀
         run: |
-          npm install -g @appwrite-cli
           appwrite init project --projectId ${{ secrets.APPWRITE_PROJECT_ID }} --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --key ${{ secrets.APPWRITE_API_KEY }}
           appwrite deploy function --all
         env:
