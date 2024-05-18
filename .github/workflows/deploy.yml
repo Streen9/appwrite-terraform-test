@@ -66,13 +66,13 @@ jobs:
           RUNTIME="node-18"
           ENTRYPOINT="index.js"
           CODE_PATH="./backend/functions/hello-world/function.zip"
-            
+
           # Check if the function exists
-          FUNCTION_ID=$(appwrite functions list --search "$FUNCTION_NAME" | jq -r '.functions[0].id')
+          FUNCTION_ID=$(appwrite functions list --search "$FUNCTION_NAME" | jq -r '.functions[0]."$id"')
 
           if [ "$FUNCTION_ID" = "null" ]; then
             # Create the function if it doesn't exist
-            FUNCTION_ID=$(appwrite functions create --name "$FUNCTION_NAME" --runtime "$RUNTIME" --entrypoint "$ENTRYPOINT" | jq -r '.id')
+            FUNCTION_ID=$(appwrite functions create --name "$FUNCTION_NAME" --runtime "$RUNTIME" --entrypoint "$ENTRYPOINT" | jq -r '."$id"')
           fi
 
           # Deploy the function code
