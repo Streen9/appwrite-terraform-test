@@ -54,7 +54,7 @@ jobs:
 
       - name: Deploy to Appwrite 🚀
         run: |
-          npm install -g @appwrite/cli
+          npm install -g @appwrite-cli
           appwrite init project --projectId ${{ secrets.APPWRITE_PROJECT_ID }} --endpoint ${{ secrets.APPWRITE_ENDPOINT }} --key ${{ secrets.APPWRITE_API_KEY }}
           appwrite deploy function --all
         env:
