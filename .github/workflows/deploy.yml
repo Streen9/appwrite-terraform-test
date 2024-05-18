@@ -52,28 +52,28 @@ jobs:
           curl -sL https://appwrite.io/cli/install.sh | bash
 
       - name: Install jq
-        run: sudo apt-get install jq
+        run: sudo apt-get install -y jq
 
       - name: Configure Appwrite CLI
         run: |
-          appwrite client set-endpoint ${{ secrets.APPWRITE_ENDPOINT }} --selfSigned=true
-          appwrite client set-project ${{ secrets.APPWRITE_PROJECT_ID }}
-          appwrite client set-key ${{ secrets.APPWRITE_API_KEY }}
+          appwrite client set-endpoint "${{ secrets.APPWRITE_ENDPOINT }}" --selfSigned=true
+          appwrite client set-project "${{ secrets.APPWRITE_PROJECT_ID }}"
+          appwrite client set-key "${{ secrets.APPWRITE_API_KEY }}"
 
       - name: Create or Update Function 🚀
         run: |
           FUNCTION_NAME="hello-world"
-          RUNTIME="node-16.0"
+          RUNTIME="node-18"
           ENTRYPOINT="index.js"
           CODE_PATH="./backend/functions/hello-world/function.zip"
           
           # Check if the function exists
-          FUNCTION_ID=$(appwrite functions list --search $FUNCTION_NAME | jq -r '.functions[0].$id')
+          FUNCTION_ID=$(appwrite functions list --search "$FUNCTION_NAME" | jq -r '.functions[0].$id')
 
-          if [ -z "$FUNCTION_ID" ]; then
+          if [ "$FUNCTION_ID" = "null" ]; then
             # Create the function if it doesn't exist
-            FUNCTION_ID=$(appwrite functions create --functionId $FUNCTION_NAME --name $FUNCTION_NAME --runtime $RUNTIME --entrypoint $ENTRYPOINT | jq -r '.$id')
+            FUNCTION_ID=$(appwrite functions create --name "$FUNCTION_NAME" --runtime "$RUNTIME" --entrypoint "$ENTRYPOINT" | jq -r '.$id')
           fi
 
           # Deploy the function code
-          appwrite functions createDeployment --functionId $FUNCTION_ID --entrypoint=$ENTRYPOINT --code=$CODE_PATH --activate
+          appwrite functions createDeployment --functionId "$FUNCTION_ID" --entrypoint="$ENTRYPOINT" --code="$CODE_PATH" --activate
