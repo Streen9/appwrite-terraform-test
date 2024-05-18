@@ -62,7 +62,7 @@ jobs:
           export APPWRITE_PROJECT_ID=${{ secrets.APPWRITE_PROJECT_ID }}
           export APPWRITE_ENDPOINT=${{ secrets.APPWRITE_ENDPOINT }}
           export APPWRITE_API_KEY=${{ secrets.APPWRITE_API_KEY }}
-          appwrite client set-endpoint $APPWRITE_ENDPOINT --selfSigned
+          appwrite client set-endpoint $APPWRITE_ENDPOINT --selfSigned=true
           appwrite client set-project $APPWRITE_PROJECT_ID
           appwrite client set-key $APPWRITE_API_KEY
           appwrite functions deploy --all
