@@ -47,22 +47,33 @@ jobs:
         run: zip -r function.zip .
         working-directory: ./backend/functions/hello-world
 
-      - name: Configure Appwrite credentials 🔑
-        uses: actions/setup-node@v2
-        with:
-          node-version: "18"
-
       - name: Install Appwrite CLI
         run: |
           curl -sL https://appwrite.io/cli/install.sh | bash
-  
 
-      - name: Deploy to Appwrite 🚀
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Configure Appwrite CLI
         run: |
-          export APPWRITE_PROJECT_ID=${{ secrets.APPWRITE_PROJECT_ID }}
-          export APPWRITE_ENDPOINT=${{ secrets.APPWRITE_ENDPOINT }}
-          export APPWRITE_API_KEY=${{ secrets.APPWRITE_API_KEY }}
-          appwrite client set-endpoint $APPWRITE_ENDPOINT --selfSigned=true
-          appwrite client set-project $APPWRITE_PROJECT_ID
-          appwrite client set-key $APPWRITE_API_KEY
-          appwrite functions deploy --all
+          appwrite client set-endpoint ${{ secrets.APPWRITE_ENDPOINT }} --selfSigned=true
+          appwrite client set-project ${{ secrets.APPWRITE_PROJECT_ID }}
+          appwrite client set-key ${{ secrets.APPWRITE_API_KEY }}
+
+      - name: Create or Update Function 🚀
+        run: |
+          FUNCTION_NAME="hello-world"
+          RUNTIME="node-16.0"
+          ENTRYPOINT="index.js"
+          CODE_PATH="./backend/functions/hello-world/function.zip"
+          
+          # Check if the function exists
+          FUNCTION_ID=$(appwrite functions list --search $FUNCTION_NAME --output json | jq -r '.functions[0].$id')
+
+          if [ -z "$FUNCTION_ID" ]; then
+            # Create the function if it doesn't exist
+            FUNCTION_ID=$(appwrite functions create --functionId $FUNCTION_NAME --name $FUNCTION_NAME --runtime $RUNTIME --entrypoint $ENTRYPOINT --output json | jq -r '.$id')
+          fi
+
+          # Deploy the function code
+          appwrite functions createDeployment --functionId $FUNCTION_ID --entrypoint=$ENTRYPOINT --code=$CODE_PATH --activate
